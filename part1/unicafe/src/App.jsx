@@ -2,11 +2,11 @@ import { useState } from "react";
 
 const Title = ({ title }) => <h1>{title}</h1>;
 
-const Button = (props) => <button onClick={props.onClick}>{props.text}</button>;
+const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>;
 
-const Stat = (stat) => (
+const ShowData = ({ name, value }) => (
   <p>
-    {stat.name} {stat.value}
+    {name} {value}
   </p>
 );
 
@@ -28,16 +28,30 @@ const App = () => {
     setBad(bad + 1);
   };
 
+  const total = good + neutral + bad;
+  const average = (good - bad) / total;
+  const positive = (good / total) * 100;
+
   return (
     <div>
       <Title title="give feedback" />
       <Button onClick={handleGoodClick} text="good" />
       <Button onClick={handleNeutralClick} text="neutral" />
       <Button onClick={handleBadClick} text="bad" />
+
       <Title title="statistics" />
-      <Stat name="good" value={good} />
-      <Stat name="neutral" value={neutral} />
-      <Stat name="bad" value={bad} />
+      {total === 0 ? (
+        <p>No feedback given yet.</p>
+      ) : (
+        <>
+          <ShowData name="good" value={good} />
+          <ShowData name="neutral" value={neutral} />
+          <ShowData name="bad" value={bad} />
+          <ShowData name="all" value={total} />
+          <ShowData name="average" value={average} />
+          <ShowData name="average" value={positive + " %"} />
+        </>
+      )}
     </div>
   );
 };
