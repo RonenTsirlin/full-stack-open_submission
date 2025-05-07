@@ -4,10 +4,15 @@ const Title = ({ title }) => <h1>{title}</h1>;
 
 const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>;
 
-const ShowData = ({ name, value }) => (
-  <p>
-    {name} {value}
-  </p>
+const StatisticLine = ({ name, value }) => (
+  <table>
+    <tbody>
+      <tr>
+        <td>{name}</td>
+        <td> {value}</td>
+      </tr>
+    </tbody>
+  </table>
 );
 
 const App = () => {
@@ -44,12 +49,12 @@ const App = () => {
         <p>No feedback given yet.</p>
       ) : (
         <>
-          <ShowData name="good" value={good} />
-          <ShowData name="neutral" value={neutral} />
-          <ShowData name="bad" value={bad} />
-          <ShowData name="all" value={total} />
-          <ShowData name="average" value={average} />
-          <ShowData name="average" value={positive + " %"} />
+          <StatisticLine name="good" value={good} />
+          <StatisticLine name="neutral" value={neutral} />
+          <StatisticLine name="bad" value={bad} />
+          <StatisticLine name="all" value={total} />
+          <StatisticLine name="average" value={average} />
+          <StatisticLine name="average" value={positive + " %"} />
         </>
       )}
     </div>
