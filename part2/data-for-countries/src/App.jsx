@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import countryService from "./services/countries";
+import getAll from "./services/countries";
 import Headline from "./components/Headline";
 import Countries from "./components/Countries";
 
@@ -8,13 +8,17 @@ function App() {
   const [countries, setCountries] = useState(null);
 
   useEffect(() => {
-    countryService.getAll().then((allCountries) => {
+    getAll().then((allCountries) => {
       setCountries(allCountries);
     });
   }, []);
 
   const handleInputChange = (event) => {
     setNewInput(event.target.value);
+  };
+
+  const handleShowButton = (countryName) => {
+    setNewInput(countryName);
   };
 
   const filteredCountries =
@@ -27,7 +31,10 @@ function App() {
   return (
     <>
       <Headline data={newInput} handleInputChange={handleInputChange} />
-      <Countries countries={filteredCountries} />
+      <Countries
+        countries={filteredCountries}
+        handleShowButton={handleShowButton}
+      />
     </>
   );
 }

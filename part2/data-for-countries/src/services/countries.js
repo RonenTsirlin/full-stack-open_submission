@@ -5,11 +5,4 @@ const getAll = () => {
   return axios.get(`${baseUrl}api/all`).then((countries) => countries.data);
 };
 
-const getSpecific = (newInput) => {
-  console.log(newInput);
-  return axios
-    .get(`${baseUrl}api/name/${newInput}`)
-    .then((countries) => countries);
-};
-
-export default { getAll, getSpecific };
+export default getAll;
