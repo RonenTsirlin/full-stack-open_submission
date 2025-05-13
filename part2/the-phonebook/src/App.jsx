@@ -133,17 +133,3 @@ const App = () => {
 };
 
 export default App;
-
-/* 
-            setPersons(
-              persons.concat(
-                persons.map((person) =>
-                  person.id === updatedPersonObject.id
-                    ? returnedPersons
-                    : person
-                )
-              )
-            );
-          });
-
-          */
