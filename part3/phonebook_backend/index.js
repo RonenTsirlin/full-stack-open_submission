@@ -1,10 +1,14 @@
 const express = require("express");
-const morgan = require("morgan");
 const app = express();
-const PORT = 3001;
-
+app.use(express.static("dist"));
 app.use(express.json());
 
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+const morgan = require("morgan");
 morgan.token("body", (request) => {
   return JSON.stringify(request.body);
 });
@@ -12,10 +16,6 @@ morgan.token("body", (request) => {
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body")
 );
-
-const generateID = () => {
-  return Math.floor(Math.random() * 100_000_000) + 1;
-};
 
 let people = [
   {
@@ -58,6 +58,10 @@ app.get("/api/persons/:id", (request, response) => {
     response.status(404).send("404 Person does not exist");
   }
 });
+
+const generateID = () => {
+  return Math.floor(Math.random() * 100_000_000) + 1;
+};
 
 app.post("/api/persons", (request, response) => {
   body = request.body;
@@ -105,6 +109,7 @@ app.get("/info", (request, response) => {
 `);
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
+app.use(unknownEndpoint);
