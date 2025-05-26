@@ -100,10 +100,10 @@ const App = () => {
 
   const handleDeleteButton = (name, id) => {
     if (window.confirm(`Delete ${name} ?`)) {
-      personService.deletePerson(id).then((returnedPerson) =>
+      personService.deletePerson(id).then(() =>
         setPersons(
           persons.filter((person) => {
-            return person.id !== returnedPerson.id;
+            return person.id !== id;
           })
         )
       );
