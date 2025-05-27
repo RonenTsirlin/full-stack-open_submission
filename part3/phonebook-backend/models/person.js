@@ -24,12 +24,18 @@ const personSchema = new mongoose.Schema({
     type: String,
     validator: function (v) {
       // Check overall structure: two parts separated by one dash
-      if (!/^\d{2,3}-\d+$/.test(v)) return false;
+      if (v.split("-").length !== 2) {
+        return false;
+      }
 
-      // Ensure total length (excluding the dash) is >= 8
       const [part1, part2] = v.split("-");
-      const totalLength = part1.length + part2.length;
-      return totalLength >= 8;
+      if (
+        part1.length + part2.length < 8 ||
+        part1.length > 3 ||
+        part1.length < 2
+      ) {
+        return false;
+      }
     },
     required: true,
   },
