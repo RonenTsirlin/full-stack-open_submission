@@ -22,20 +22,22 @@ const personSchema = new mongoose.Schema({
   },
   number: {
     type: String,
-    validator: function (v) {
-      // Check overall structure: two parts separated by one dash
-      if (v.split("-").length !== 2) {
-        return false;
-      }
+    validate: {
+      validator: function (v) {
+        // Check overall structure: two parts separated by one dash
+        if (v.split("-").length !== 2) {
+          return false;
+        }
 
-      const [part1, part2] = v.split("-");
-      if (
-        part1.length + part2.length < 8 ||
-        part1.length > 3 ||
-        part1.length < 2
-      ) {
-        return false;
-      }
+        const [part1, part2] = v.split("-");
+        if (
+          part1.length + part2.length < 8 ||
+          part1.length > 3 ||
+          part1.length < 2
+        ) {
+          return false;
+        }
+      },
     },
     required: true,
   },

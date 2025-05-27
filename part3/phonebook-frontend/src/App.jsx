@@ -79,14 +79,23 @@ const App = () => {
       const newObject = { name: newName, number: newNumber };
       personService
         .create(newObject)
-        .then((returnedPerson) => setPersons(persons.concat(returnedPerson)));
-
-      setNotification({ message: `Added ${newName}`, type: "success" });
-      setTimeout(() => {
-        setNotification({ message: null, type: "" });
-      }, 6000);
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson));
+          setNotification({ message: `Added ${newName}`, type: "success" });
+          setTimeout(() => {
+            setNotification({ message: null, type: "" });
+          }, 6000);
+        })
+        .catch((error) => {
+          setNotification({
+            message: "The name or number are not valid.",
+            type: "error",
+          });
+          setTimeout(() => {
+            setNotification({ message: null, type: "" });
+          }, 10000);
+        });
     }
-
     setNewName("");
     setNewNumber("");
   };
