@@ -17,10 +17,22 @@ mongoose
 const personSchema = new mongoose.Schema({
   name: {
     type: String,
-    minLength: 3,
+    minLength: [3, "Name must be at least 3 characters long"],
     required: true,
   },
-  number: String,
+  number: {
+    type: String,
+    validator: function (v) {
+      // Check overall structure: two parts separated by one dash
+      if (!/^\d{2,3}-\d+$/.test(v)) return false;
+
+      // Ensure total length (excluding the dash) is >= 8
+      const [part1, part2] = v.split("-");
+      const totalLength = part1.length + part2.length;
+      return totalLength >= 8;
+    },
+    required: true,
+  },
 });
 
 personSchema.set("toJSON", {
