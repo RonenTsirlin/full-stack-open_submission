@@ -20,10 +20,12 @@ app.get("/", (request, response) => {
   response.send("<h1>Backend Phonebook App</h1>");
 });
 
-app.get("/api/persons", (request, response) => {
-  Person.find({}).then((people) => {
-    response.json(people);
-  });
+app.get("/api/persons", (request, response, next) => {
+  Person.find({})
+    .then((people) => {
+      response.json(people);
+    })
+    .catch((error) => next(error));
 });
 
 app.get("/api/persons/:id", (request, response, next) => {
@@ -38,7 +40,7 @@ app.get("/api/persons/:id", (request, response, next) => {
     .catch((error) => next(error));
 });
 
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
   const body = request.body;
 
   if (!body.name || !body.number) {
@@ -50,9 +52,12 @@ app.post("/api/persons", (request, response) => {
     number: body.number,
   });
 
-  person.save().then((savedPerson) => {
-    response.json(savedPerson);
-  });
+  person
+    .save()
+    .then((savedPerson) => {
+      response.json(savedPerson);
+    })
+    .catch((error) => next(error));
 });
 
 app.put("/api/persons/:id", (request, response, next) => {
@@ -83,12 +88,13 @@ app.delete("/api/persons/:id", (request, response, next) => {
 
 app.get("/info", (request, response) => {
   const timeReceived = new Date().toString();
-  Person.find({}).then((people) => {
-    response.send(`
+  Person.find({})
+    .then((people) => {
+      response.send(`
     <p>Phonebook has info for ${people.length} people</p>
-    <p>${timeReceived}</p>  
-`);
-  });
+    <p>${timeReceived}</p>  `);
+    })
+    .catch((error) => next(error));
 });
 
 const unknownEndpoint = (request, response) => {
