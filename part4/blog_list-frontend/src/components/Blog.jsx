@@ -9,6 +9,7 @@ const Blog = ({ blog }) => {
       <br />
       {`Likes: ${blog.likes}`}
       <br />
+      <br />
     </li>
   );
 };
