@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import blogService from "./services/blogs";
-import Blog from "./components/blog";
+import Blog from "./components/Blog";
 
 function App() {
   const [blogs, setBlogs] = useState([]);
@@ -8,7 +8,7 @@ function App() {
     title: "",
     author: "",
     url: "",
-    likes: "",
+    likes: 0,
   });
 
   useEffect(() => {

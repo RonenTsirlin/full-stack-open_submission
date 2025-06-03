@@ -56,8 +56,50 @@ test("the likes property is not missing from the request", async () => {
   const blogs = response.body;
 
   blogs.forEach((blog) => {
-    assert.ok(blog.likes, 'Expected blog to have "likes" property');
+    assert.notStrictEqual(blog.likes, undefined);
   });
+});
+
+test("likes default to 0 if missing from request", async () => {
+  const newBlog = {
+    title: "No likes field",
+    author: "Test Author",
+    url: "http://nolikes.com",
+  };
+
+  const response = await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+
+  assert.strictEqual(response.body.likes, 0);
+});
+
+test("blog without title is not added", async () => {
+  const newBlog = {
+    author: "Author Only",
+    url: "http://example.com",
+    likes: 10,
+  };
+
+  const response = await api.post("/api/blogs").send(newBlog).expect(400);
+  const blogsAtEnd = await helper.blogsInDb();
+
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length);
+});
+
+test("blog without url is not added", async () => {
+  const newBlog = {
+    title: "Missing URL Blog",
+    author: "Author Only",
+    likes: 5,
+  };
+
+  const response = await api.post("/api/blogs").send(newBlog).expect(400);
+  const blogsAtEnd = await helper.blogsInDb();
+
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length);
 });
 
 after(async () => {
