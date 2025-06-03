@@ -20,16 +20,44 @@ function App() {
   const addBlog = (event) => {
     event.preventDefault();
 
-    blogService.create({ ...formData }).then((returnedBlog) => {
-      setBlogs(blogs.concat(returnedBlog));
-    });
+    if (
+      blogs.find(
+        (blog) =>
+          blog.author === formData.author && blog.title === formData.title
+      )
+    ) {
+      if (
+        window.confirm(
+          `${formData.author} already has a blog named ${formData.title}, replace the old number of likes ?`
+        )
+      ) {
+        const blogToUpdate = blogs.find(
+          (blog) => blog.author === formData.author && blog.title === blog.title
+        );
+        const updatedBlog = {
+          ...blogToUpdate,
+          likes: formData.likes,
+        };
+        blogService.update(updatedBlog.id, updatedBlog).then((returnedBlog) => {
+          setBlogs(
+            blogs
+              .filter((blog) => blog.id !== returnedBlog.id)
+              .concat(returnedBlog)
+          );
+        });
+      }
+    } else {
+      blogService.create({ ...formData }).then((returnedBlog) => {
+        setBlogs(blogs.concat(returnedBlog));
+      });
 
-    setFormData({
-      title: "",
-      author: "",
-      url: "",
-      likes: 0,
-    });
+      setFormData({
+        title: "",
+        author: "",
+        url: "",
+        likes: 0,
+      });
+    }
   };
 
   const handleChange = (event) => {
@@ -38,6 +66,18 @@ function App() {
       ...prevData,
       [name]: value,
     }));
+  };
+
+  const handleDeleteButton = (title, author, id) => {
+    if (window.confirm(`Delete ${title} by ${author} ?`)) {
+      blogService.deleteBlog(id).then(() =>
+        setBlogs(
+          blogs.filter((blog) => {
+            return blog.id !== id;
+          })
+        )
+      );
+    }
   };
 
   return (
@@ -97,7 +137,18 @@ function App() {
       <h2>Blogs:</h2>
       <ul>
         {blogs.map((blog) => (
-          <Blog key={blog._id} blog={blog} />
+          <>
+            <Blog key={blog._id} blog={blog} />
+            <button
+              onClick={() =>
+                handleDeleteButton(blog.title, blog.author, blog.id)
+              }
+            >
+              delete
+            </button>
+            <br />
+            <br />
+          </>
         ))}
       </ul>
     </>

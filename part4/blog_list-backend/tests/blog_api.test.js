@@ -83,7 +83,7 @@ test("blog without title is not added", async () => {
     likes: 10,
   };
 
-  const response = await api.post("/api/blogs").send(newBlog).expect(400);
+  await api.post("/api/blogs").send(newBlog).expect(400);
   const blogsAtEnd = await helper.blogsInDb();
 
   assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length);
@@ -96,10 +96,63 @@ test("blog without url is not added", async () => {
     likes: 5,
   };
 
-  const response = await api.post("/api/blogs").send(newBlog).expect(400);
+  await api.post("/api/blogs").send(newBlog).expect(400);
   const blogsAtEnd = await helper.blogsInDb();
 
   assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length);
+});
+
+test("deleting a blog works.", async () => {
+  const blogToDelete = {
+    title: "Test",
+    author: "Me",
+    url: "none.com",
+    likes: 234,
+  };
+
+  const response = await api
+    .post("/api/blogs")
+    .send(blogToDelete)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+
+  const createdId = response.body.id;
+
+  await api.delete(`/api/blogs/${createdId}`).expect(204);
+
+  const blogsAfter = await helper.blogsInDb();
+  const ids = blogsAfter.map((b) => b.id);
+  assert(!ids.includes(createdId), "Deleted blog should no longer exist");
+});
+
+test("updating the likes of an existing blog.", async () => {
+  const blogToUpdate = {
+    title: "Test",
+    author: "Me",
+    url: "none.com",
+    likes: 234,
+  };
+
+  const createResponse = await api
+    .post("/api/blogs")
+    .send(blogToUpdate)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+
+  const createdId = createResponse.body.id;
+
+  const updatedBlog = {
+    ...blogToUpdate,
+    likes: 11,
+  };
+
+  const updateResponse = await api
+    .put(`/api/blogs/${createdId}`)
+    .send(updatedBlog)
+    .expect(200)
+    .expect("Content-Type", /application\/json/);
+
+  assert.strictEqual(updateResponse.body.likes, 11);
 });
 
 after(async () => {
